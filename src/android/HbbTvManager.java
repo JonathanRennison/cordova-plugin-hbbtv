@@ -40,6 +40,7 @@ public class HbbTvManager{
   private Dial mDial;
   private Map<String, DialAppInfo> mHbbTvTerminals;
   private DiscoverTerminalsCallback mDiscoverTerminalsCallback;
+  private DiscoverTerminalImmediateCallback mDiscoverTerminalImmediateCallback;
   private boolean searching = false;
   private Handler mHandler;
   public HbbTvManager(){
@@ -57,6 +58,14 @@ public class HbbTvManager{
 
   public void setDiscoverTerminalsCallback(DiscoverTerminalsCallback discoverTerminalsCallback) {
     this.mDiscoverTerminalsCallback = discoverTerminalsCallback;
+  }
+
+  public DiscoverTerminalImmediateCallback getDiscoverTerminalImmediateCallback() {
+    return mDiscoverTerminalImmediateCallback;
+  }
+
+  public void setDiscoverTerminalImmediateCallback(DiscoverTerminalImmediateCallback discoverTerminalImmediateCallback) {
+    this.mDiscoverTerminalImmediateCallback = discoverTerminalImmediateCallback;
   }
 
   public synchronized void discoverTerminals(){
@@ -108,6 +117,9 @@ public class HbbTvManager{
               Log.d(TAG, "onReceiveAppInfo: " + dialDevice.getApplicationUrl() + ", " + appInfo);
               if(appInfo != null /*&& appInfo.getAdditionalData("X_HbbTV_App2AppURL") != null*/){
                 getHbbTvTerminals().put(dialDevice.getApplicationUrl(),appInfo);
+                if(getDiscoverTerminalImmediateCallback() != null) {
+                  getDiscoverTerminalImmediateCallback().onDiscoverTerminalImmediate(appInfo);
+                }
               }
             }
           });
@@ -119,5 +131,9 @@ public class HbbTvManager{
 
   public interface DiscoverTerminalsCallback {
     public void onDiscoverTerminals(Map<String,DialAppInfo> terminals);
+  }
+
+  public interface DiscoverTerminalImmediateCallback {
+    public void onDiscoverTerminalImmediate(DialAppInfo terminal);
   }
 }

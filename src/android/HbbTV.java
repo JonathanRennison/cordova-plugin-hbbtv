@@ -53,6 +53,9 @@ public class HbbTV extends CordovaPlugin {
     else if (action.equals("launchHbbTVApp")) {
       return this.launchHbbTVApp(args, callbackContext);
     }
+    else if (action.equals("setDiscoverTerminalImmediateCallback")) {
+      return this.setDiscoverTerminalImmediateCallback(args, callbackContext);
+    }
     return false;
   }
 
@@ -87,6 +90,18 @@ public class HbbTV extends CordovaPlugin {
       Log.e(TAG,e.getMessage(),e);
       callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR,500));
     }
+    return true;
+  }
+
+  private synchronized boolean setDiscoverTerminalImmediateCallback(JSONArray args, final CallbackContext callbackContext) {
+    getHbbTvManager().setDiscoverTerminalImmediateCallback(new HbbTvManager.DiscoverTerminalImmediateCallback() {
+      @Override
+      public void onDiscoverTerminalImmediate(DialAppInfo terminal) {
+        PluginResult result = new PluginResult(PluginResult.Status.OK, terminalToJson(terminal));
+        result.setKeepCallback(true);
+        callbackContext.sendPluginResult(result);
+      }
+    });
     return true;
   }
 
