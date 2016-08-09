@@ -28,11 +28,13 @@ var discoveredTerminals = {};
  * A DiscoveredTerminal object shall have the following properties:
  *  - readonly Number enum_id: A unique ID for a discovered HbbTV terminal
  *  - readonly String friendly_name: A discovered terminal may provide a friendly name, e.g. “Muttleys TV”, for an HbbTV application to make use of.
+ *  - readonly String launch_url: The HbbTV application launch URL.
+ *  - readonly String additionalData: An object containing the additional data fields of the discovered HbbTV terminal.
  * 	- readonly String X_HbbTV_App2AppURL: The remote service endpoint on the discovered HbbTV terminal for application to application communication
  * 	- readonly String X_HbbTV_InterDevSyncURL: The remote service endpoint on the discovered HbbTV terminal for inter-device synchronisation
  * 	- readonly String X_HbbTV_UserAgent: The User Agent string of the discovered HbbTV terminal
  */
-var DiscoveredTerminal = function(enum_id, friendly_name, X_HbbTV_App2AppURL, X_HbbTV_InterDevSyncURL, X_HbbTV_UserAgent){
+var DiscoveredTerminal = function(enum_id, friendly_name, launch_url, additionalData, terminal){
     Object.defineProperty(this, "enum_id", {
         get: function () {
             return enum_id;
@@ -43,19 +45,34 @@ var DiscoveredTerminal = function(enum_id, friendly_name, X_HbbTV_App2AppURL, X_
             return friendly_name;
         }
     });
+    Object.defineProperty(this, "launch_url", {
+        get: function () {
+            return launch_url;
+        }
+    });
+    Object.defineProperty(this, "additionalData", {
+        get: function () {
+            return additionalData;
+        }
+    });
     Object.defineProperty(this, "X_HbbTV_App2AppURL", {
         get: function () {
-            return X_HbbTV_App2AppURL;
+            return additionalData.X_HbbTV_App2AppURL;
         }
     });
     Object.defineProperty(this, "X_HbbTV_InterDevSyncURL", {
         get: function () {
-            return X_HbbTV_InterDevSyncURL;
+            return additionalData.X_HbbTV_InterDevSyncURL;
         }
     });
     Object.defineProperty(this, "X_HbbTV_UserAgent", {
         get: function () {
-            return X_HbbTV_UserAgent;
+            return additionalData.X_HbbTV_UserAgent;
+        }
+    });
+    Object.defineProperty(this, "terminal", {
+        get: function () {
+            return terminal;
         }
     });
 };
@@ -75,6 +92,15 @@ var HbbTVTerminalManager = function(){
             return launchHbbTVApp;
         }
     });
+
+var handleNewTerminal = function(terminal){
+    var launchUrl = terminal.launchUrl;
+    var oldTerminal = discoveredTerminals[launchUrl];
+    var enumId = oldTerminal && oldTerminal.enum_id || terminalCounter++;
+    var newTerminal = new DiscoveredTerminal(enumId, terminal.friendlyName, terminal.launchUrl, terminal.additionalData, terminal);
+    discoveredTerminals[launchUrl] = newTerminal;
+    discoveredTerminals[enumId] = terminal;
+    return newTerminal;
 };
 
 /**
@@ -86,12 +112,7 @@ var discoverTerminals = function(onTerminalDiscovery){
         var res = [];
         for(var i=0;i<terminals.length; i++){
             var terminal = terminals[i];
-            var launchUrl = terminal.launchUrl;
-            var oldTerminal = discoveredTerminals[launchUrl];
-            var enumId = oldTerminal && oldTerminal.enum_id || terminalCounter++;
-            var newTerminal = new DiscoveredTerminal(enumId, terminal.friendlyName, terminal.X_HbbTV_App2AppURL, terminal.X_HbbTV_InterDevSyncURL, terminal.X_HbbTV_UserAgent);
-            discoveredTerminals[launchUrl] = newTerminal;
-            discoveredTerminals[enumId] = terminal;
+            var newTerminal = handleNewTerminal(terminal);
             res.push(newTerminal);
         }
         onTerminalDiscovery && onTerminalDiscovery.call(null,res);

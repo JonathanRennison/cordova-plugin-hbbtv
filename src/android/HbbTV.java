@@ -90,6 +90,27 @@ public class HbbTV extends CordovaPlugin {
     return true;
   }
 
+  private JSONObject terminalToJson(DialAppInfo terminal) {
+    DialDevice device = terminal.getDialDevice();
+    HashMap<String,Object> copy = new HashMap<String,Object>();
+    copy.put("descriptionUrl",device.getDescriptionUrl());
+    copy.put("launchUrl",device.getApplicationUrl()+"/HbbTV");
+    copy.put("applicationUrl",device.getApplicationUrl());
+    copy.put("usn",device.getUSN());
+    copy.put("type",device.getType());
+    copy.put("friendlyName",device.getFriendlyName());
+    copy.put("manufacturer",device.getManufacturer());
+    copy.put("manufacturerUrl",device.getManufacturerUrl());
+    copy.put("modelDescription",device.getModelDescription());
+    copy.put("modelName",device.getModelName());
+    copy.put("udn",device.getUDN());
+    copy.put("state",terminal.getState());
+    HashMap<String,Object> additionalData = new HashMap<String,Object>();
+    additionalData.putAll(terminal.getAdditionalData());
+    copy.put("additionalData",new JSONObject(additionalData));
+    return new JSONObject(copy);
+  }
+
   private HbbTvManager getHbbTvManager() {
     if (hbbTvManager == null){
       hbbTvManager = new HbbTvManager(new HbbTvManager.DiscoverTerminalsCallback() {
@@ -98,22 +119,7 @@ public class HbbTV extends CordovaPlugin {
           synchronized (HbbTV.this){
             JSONArray arr = new JSONArray();
             for (DialAppInfo terminal: terminals.values()){
-              DialDevice device = terminal.getDialDevice();
-              HashMap<String,Object> copy = new HashMap<String,Object>();
-              copy.put("descriptionUrl",device.getDescriptionUrl());
-              copy.put("launchUrl",device.getApplicationUrl()+"/HbbTV");
-              copy.put("applicationUrl",device.getApplicationUrl());
-              copy.put("usn",device.getUSN());
-              copy.put("type",device.getType());
-              copy.put("friendlyName",device.getFriendlyName());
-              copy.put("manufacturer",device.getManufacturer());
-              copy.put("manufacturerUrl",device.getManufacturerUrl());
-              copy.put("modelDescription",device.getModelDescription());
-              copy.put("modelName",device.getModelName());
-              copy.put("udn",device.getUDN());
-              copy.put("state",terminal.getState());
-              copy.putAll(terminal.getAdditionalData());
-              arr.put(new JSONObject(copy));
+              arr.put(terminalToJson(terminal));
             }
             for (CallbackContext callbackContext: getPendingDiscoveryRequests()){
               if (callbackContext != null){
