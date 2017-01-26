@@ -85,12 +85,14 @@ public class Dial {
 
   public synchronized void search(int timeoutInSeconds) throws IOException{
     int timeout = Math.max(MIN_SEARCH_TIMEOUT,Math.min(timeoutInSeconds,MAX_SEARCH_TIMEOUT));
+    Log.d(TAG, "search() called, timeout: " + timeout);
     if (getSsdp().start(timeout)){
       getSsdp().search(DIAL_SERVICE_TYPE);
     }
   }
 
   public synchronized void cancel() throws IOException{
+    Log.d(TAG, "cancel() called");
     getSsdp().stop();
   }
 

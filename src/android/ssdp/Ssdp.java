@@ -90,6 +90,7 @@ public class Ssdp implements Runnable {
 
   public synchronized void search(SsdpMessage msg) throws IOException {
     if(mDatagramSocket != null){
+      Log.d(TAG, "Emitting SSDP search");
       byte bytes[] = msg.toString().getBytes();
       DatagramPacket dp = new DatagramPacket(bytes, bytes.length, getMulticastGroup());
       mDatagramSocket.send(dp);

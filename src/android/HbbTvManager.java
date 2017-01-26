@@ -84,6 +84,12 @@ public class HbbTvManager{
         public void run() {
           synchronized(HbbTvManager.this) {
             Log.d(TAG, "discoverTerminals: stop searching");
+            try {
+              getDial().cancel();
+            }
+            catch (IOException e){
+              Log.e(TAG,e.getMessage(),e);
+            }
             if (getDiscoverTerminalsCallback() != null){
               getDiscoverTerminalsCallback().onDiscoverTerminals(getLastFoundTerminals());
             }
