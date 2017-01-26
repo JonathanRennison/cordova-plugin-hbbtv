@@ -252,13 +252,13 @@ public class DialDevice {
 
     private void readAppInfo(XmlPullParser parser, DialAppInfo appInfo) throws XmlPullParserException, IOException{
       parser.require(XmlPullParser.START_TAG, ns, "service");
-      Log.d(TAG, "XML parser " + parser.getName());
+      //Log.d(TAG, "XML parser " + parser.getName());
       while (parser.next() != XmlPullParser.END_TAG) {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
           continue;
         }
         String name = parser.getName();
-        Log.d(TAG, "XML parser current element"+name);
+        //Log.d(TAG, "XML parser current element"+name);
         if (name.equals("name")) {
           appInfo.setName(readText(parser, name));
         }
@@ -286,14 +286,14 @@ public class DialDevice {
 
     private void readAppInfoAdditionalData(XmlPullParser parser, DialAppInfo appInfo) throws XmlPullParserException, IOException{
       parser.require(XmlPullParser.START_TAG, ns, "additionalData");
-      Log.d(TAG, "XML parser "+parser.getName());
+      //Log.d(TAG, "XML parser "+parser.getName());
       while (parser.next() != XmlPullParser.END_TAG) {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
           continue;
         }
         try {
           String name = parser.getName();
-          Log.d(TAG, "XML parser current element"+name);
+          //Log.d(TAG, "XML parser current element"+name);
           String value = readText(parser, name);
           appInfo.getAdditionalData().put(name,value);
         }
