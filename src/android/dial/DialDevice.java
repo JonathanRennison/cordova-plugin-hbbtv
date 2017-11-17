@@ -55,7 +55,7 @@ public class DialDevice {
   private String mModelName;
   private String mUDN;
   private String mPresentationUrl;
-  private Executor mExecutor = AsyncTask.SERIAL_EXECUTOR;
+  private Executor mExecutor = AsyncTask.THREAD_POOL_EXECUTOR;
 
   public DialDevice(String descriptionUrl, SsdpMessage ssdpMessage){
     mDescriptionUrl = descriptionUrl;
