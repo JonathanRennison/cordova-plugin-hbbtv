@@ -98,6 +98,12 @@ var HbbTVTerminalManager = function(){
             return setDiscoverTerminalImmediateCallback;
         }
     });
+
+    Object.defineProperty(this, "discoverTerminalAtDeviceDescriptionUrl", {
+        get: function () {
+            return discoverTerminalAtDeviceDescriptionUrl;
+        }
+    });
 };
 
 var handleNewTerminal = function(terminal){
@@ -170,6 +176,16 @@ var setDiscoverTerminalImmediateCallback = function(onDiscoverImmediate){
         onDiscoverImmediate && onDiscoverImmediate.call(null,null,statusCode);
     };
     exec(success, error, "HbbTV", "setDiscoverTerminalImmediateCallback", []);
+};
+
+var discoverTerminalAtDeviceDescriptionUrl = function(deviceDescriptionUrl, callback){
+    var success = function (terminal) {
+        callback && callback.call(null, null);
+    };
+    var error = function (statusCode) {
+        callback && callback.call(null, statusCode);
+    };
+    exec(success, error, "HbbTV", "discoverTerminalAtDeviceDescriptionUrl", [deviceDescriptionUrl]);
 };
 
 var createXmlLaunchRequest = function(options){

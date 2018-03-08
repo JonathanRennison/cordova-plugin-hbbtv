@@ -100,6 +100,11 @@ public class HbbTvManager{
     }
   }
 
+  public synchronized void discoverTerminalFromUrl(String getDialDeviceFromUrl){
+    Log.d(TAG, "discoverTerminalFromUrl: searching at URL: " + getDialDeviceFromUrl);
+    getDial().getDialDeviceFromUrl(getDialDeviceFromUrl);
+  }
+
   public Map<String, DialAppInfo> getLastFoundTerminals(){
     return new HashMap<String, DialAppInfo>(getHbbTvTerminals());
   };

@@ -110,6 +110,12 @@ public class Dial {
     new DownloadDeviceDescriptionTask().executeOnExecutor(mExecutor, device);
   }
 
+  public void getDialDeviceFromUrl(String deviceDescriptionUrl){
+    DialDevice device = new DialDevice(deviceDescriptionUrl, null);
+    device.setExecutor(mExecutor);
+    new DownloadDeviceDescriptionTask().executeOnExecutor(mExecutor, device);
+  }
+
   public interface DeviceFoundCallback {
     public void onDialDeviceFound(DialDevice dialDevice);
   }

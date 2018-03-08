@@ -56,6 +56,9 @@ public class HbbTV extends CordovaPlugin {
     else if (action.equals("setDiscoverTerminalImmediateCallback")) {
       return this.setDiscoverTerminalImmediateCallback(args, callbackContext);
     }
+    else if (action.equals("discoverTerminalAtDeviceDescriptionUrl")) {
+      return this.discoverTerminalAtDeviceDescriptionUrl(args, callbackContext);
+    }
     return false;
   }
 
@@ -102,6 +105,17 @@ public class HbbTV extends CordovaPlugin {
         callbackContext.sendPluginResult(result);
       }
     });
+    return true;
+  }
+
+  private synchronized boolean discoverTerminalAtDeviceDescriptionUrl(JSONArray args, final CallbackContext callbackContext) {
+    try{
+      getHbbTvManager().discoverTerminalFromUrl(args.getString(0));
+    }
+    catch (Exception e){
+      Log.e(TAG,e.getMessage(),e);
+      callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR,500));
+    }
     return true;
   }
 
